@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rohans Web Team Hub</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="/_sdk/data_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'DM Sans', sans-serif; }
+    .scrollbar-thin::-webkit-scrollbar { width: 6px; }
+    .scrollbar-thin::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+    .msg-enter { animation: slideUp 0.3s ease; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-slate-900 text-slate-100">
+  <div id="app" class="h-full w-full flex flex-col overflow-hidden"><!-- Header -->
+   <header class="flex items-center justify-between px-5 py-4 bg-slate-800 border-b border-slate-700 shrink-0">
+    <div class="flex items-center gap-3">
+     <div class="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center font-bold text-slate-900 text-sm">
+      RW
+     </div>
+     <div>
+      <h1 id="team-name" class="text-lg font-bold text-slate-50">Rohans Web</h1>
+      <p id="welcome-msg" class="text-xs text-slate-400">Welcome to the team hub!</p>
+     </div>
+    </div>
+    <div class="flex items-center gap-1"><button onclick="switchTab('chat')" id="tab-chat" class="tab-btn px-3 py-1.5 rounded-md text-sm font-medium bg-emerald-500/20 text-emerald-400"> <i data-lucide="message-circle" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>Chat </button> <button onclick="switchTab('links')" id="tab-links" class="tab-btn px-3 py-1.5 rounded-md text-sm font-medium text-slate-400 hover:bg-slate-700"> <i data-lucide="link" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>Links </button> <button onclick="switchTab('files')" id="tab-files" class="tab-btn px-3 py-1.5 rounded-md text-sm font-medium text-slate-400 hover:bg-slate-700"> <i data-lucide="file" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>Files </button>
+    </div>
+   </header><!-- Chat View -->
+   <div id="view-chat" class="flex-1 flex flex-col overflow-hidden">
+    <div id="chat-messages" class="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-3"></div>
+    <div class="p-4 bg-slate-800 border-t border-slate-700 shrink-0">
+     <form id="chat-form" class="flex gap-2"><input id="chat-author" type="text" placeholder="Name" class="w-24 px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500" required> <input id="chat-input" type="text" placeholder="Type a message..." class="flex-1 px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500" required> <button type="submit" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-medium rounded-lg text-sm transition-colors">Send</button>
+     </form>
+    </div>
+   </div><!-- Links View -->
+   <div id="view-links" class="flex-1 flex flex-col overflow-hidden hidden">
+    <div id="links-list" class="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-2"></div>
+    <div class="p-4 bg-slate-800 border-t border-slate-700 shrink-0">
+     <form id="link-form" class="flex gap-2 flex-wrap"><input id="link-label" type="text" placeholder="Label" class="w-28 px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500" required> <input id="link-url" type="url" placeholder="https://..." class="flex-1 min-w-[180px] px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500" required> <button type="submit" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-medium rounded-lg text-sm transition-colors">Add Link</button>
+     </form>
+    </div>
+   </div><!-- Files View -->
+   <div id="view-files" class="flex-1 flex flex-col overflow-hidden hidden">
+    <div id="files-list" class="flex-1 overflow-y-auto scrollbar-thin p-4 space-y-2"></div>
+    <div class="p-4 bg-slate-800 border-t border-slate-700 shrink-0">
+     <form id="file-form" class="flex gap-2 flex-wrap"><input id="file-label" type="text" placeholder="File name" class="w-32 px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500" required> <input id="file-url" type="url" placeholder="File URL (https://...)" class="flex-1 min-w-[180px] px-3 py-2 rounded-lg bg-slate-700 border border-slate-600 text-sm text-slate-100 placeholder-slate-400 focus:outline-none focus:border-emerald-500" required> <button type="submit" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-medium rounded-lg text-sm transition-colors">Add File</button>
+     </form>
+    </div>
+   </div><!-- Empty States -->
+   <div id="empty-chat" class="hidden flex-1 flex items-center justify-center text-slate-500 text-sm">
+    No messages yet. Start the conversation!
+   </div>
+   <div id="empty-links" class="hidden flex-1 flex items-center justify-center text-slate-500 text-sm">
+    No links added yet.
+   </div>
+   <div id="empty-files" class="hidden flex-1 flex items-center justify-center text-slate-500 text-sm">
+    No files added yet.
+   </div>
+  </div>
+  <script>
+    // State
+    let allData = [];
+    let currentTab = 'chat';
+    let isSubmitting = false;
+
+    const defaultConfig = {
+      team_name: 'Rohans Web',
+      welcome_message: 'Welcome to the team hub!',
+      background_color: '#0f172a',
+      surface_color: '#1e293b',
+      text_color: '#f8fafc',
+      primary_color: '#10b981',
+      secondary_color: '#334155'
+    };
+
+    // Element SDK
+    window.elementSdk.init({
+      defaultConfig,
+      onConfigChange: async (config) => {
+        const c = { ...defaultConfig, ...config };
+        document.getElementById('team-name').textContent = c.team_name;
+        document.getElementById('welcome-msg').textContent = c.welcome_message;
+        document.body.style.backgroundColor = c.background_color;
+        document.querySelector('header').style.backgroundColor = c.surface_color;
+        document.getElementById('team-name').style.color = c.text_color;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          if (!btn.classList.contains('active-tab')) btn.style.color = c.text_color;
+        });
+      },
+      mapToCapabilities: (config) => {
+        const c = { ...defaultConfig, ...config };
+        return {
+          recolorables: [
+            { get: () => c.background_color, set: (v) => window.elementSdk.setConfig({ background_color: v }) },
+            { get: () => c.surface_color, set: (v) => window.elementSdk.setConfig({ surface_color: v }) },
+            { get: () => c.text_color, set: (v) => window.elementSdk.setConfig({ text_color: v }) },
+            { get: () => c.primary_color, set: (v) => window.elementSdk.setConfig({ primary_color: v }) },
+            { get: () => c.secondary_color, set: (v) => window.elementSdk.setConfig({ secondary_color: v }) }
+          ],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        };
+      },
+      mapToEditPanelValues: (config) => {
+        const c = { ...defaultConfig, ...config };
+        return new Map([
+          ['team_name', c.team_name],
+          ['welcome_message', c.welcome_message]
+        ]);
+      }
+    });
+
+    // Data SDK
+    const dataHandler = {
+      onDataChanged(data) {
+        allData = data;
+        renderCurrentView();
+      }
+    };
+
+    (async () => {
+      const result = await window.dataSdk.init(dataHandler);
+      if (!result.isOk) console.error('Data SDK init failed');
+    })();
+
+    // Tab switching
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('view-chat').classList.add('hidden');
+      document.getElementById('view-links').classList.add('hidden');
+      document.getElementById('view-files').classList.add('hidden');
+      document.getElementById('empty-chat').classList.add('hidden');
+      document.getElementById('empty-links').classList.add('hidden');
+      document.getElementById('empty-files').classList.add('hidden');
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = 'tab-btn px-3 py-1.5 rounded-md text-sm font-medium text-slate-400 hover:bg-slate-700';
+      });
+      document.getElementById('tab-' + tab).className = 'tab-btn px-3 py-1.5 rounded-md text-sm font-medium bg-emerald-500/20 text-emerald-400';
+      renderCurrentView();
+    }
+
+    function renderCurrentView() {
+      const chats = allData.filter(d => d.type === 'chat');
+      const links = allData.filter(d => d.type === 'link');
+      const files = allData.filter(d => d.type === 'file');
+
+      if (currentTab === 'chat') {
+        const container = document.getElementById('chat-messages');
+        const empty = document.getElementById('empty-chat');
+        if (chats.length === 0) {
+          document.getElementById('view-chat').classList.add('hidden');
+          empty.classList.remove('hidden');
+        } else {
+          document.getElementById('view-chat').classList.remove('hidden');
+          empty.classList.add('hidden');
+          renderMessages(container, chats);
+        }
+      } else if (currentTab === 'links') {
+        const container = document.getElementById('links-list');
+        const empty = document.getElementById('empty-links');
+        if (links.length === 0) {
+          document.getElementById('view-links').classList.add('hidden');
+          empty.classList.remove('hidden');
+        } else {
+          document.getElementById('view-links').classList.remove('hidden');
+          empty.classList.add('hidden');
+          renderLinks(container, links);
+        }
+      } else {
+        const container = document.getElementById('files-list');
+        const empty = document.getElementById('empty-files');
+        if (files.length === 0) {
+          document.getElementById('view-files').classList.add('hidden');
+          empty.classList.remove('hidden');
+        } else {
+          document.getElementById('view-files').classList.remove('hidden');
+          empty.classList.add('hidden');
+          renderFiles(container, files);
+        }
+      }
+    }
+
+    function renderMessages(container, messages) {
+      const sorted = [...messages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      const existingMap = new Map([...container.children].map(el => [el.dataset.id, el]));
+      const fragment = document.createDocumentFragment();
+      sorted.forEach(msg => {
+        if (existingMap.has(msg.__backendId)) {
+          fragment.appendChild(existingMap.get(msg.__backendId));
+          existingMap.delete(msg.__backendId);
+        } else {
+          const div = document.createElement('div');
+          div.dataset.id = msg.__backendId;
+          div.className = 'msg-enter flex gap-3 items-start';
+          const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          div.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-slate-600 flex items-center justify-center text-xs font-bold shrink-0">${(msg.author || '?')[0].toUpperCase()}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline gap-2"><span class="font-semibold text-sm text-emerald-400">${escHtml(msg.author)}</span><span class="text-xs text-slate-500">${time}</span></div>
+              <p class="text-sm text-slate-200 mt-0.5 break-words">${escHtml(msg.content)}</p>
+            </div>
+            <button onclick="deleteItem('${msg.__backendId}')" class="text-slate-500 hover:text-red-400 shrink-0 p-1"><i data-lucide="x" style="width:14px;height:14px;"></i></button>
+          `;
+          fragment.appendChild(div);
+        }
+      });
+      existingMap.forEach(el => el.remove());
+      container.innerHTML = '';
+      container.appendChild(fragment);
+      lucide.createIcons();
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function renderLinks(container, links) {
+      const sorted = [...links].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      container.innerHTML = sorted.map(l => `
+        <div class="flex items-center gap-3 p-3 bg-slate-800 rounded-lg border border-slate-700">
+          <a href="${escAttr(l.url)}" target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center gap-2 px-3 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-md hover:bg-emerald-500/20 transition-colors">
+            <i data-lucide="external-link" style="width:14px;height:14px;color:#10b981;"></i>
+            <span class="text-sm font-medium text-emerald-400 truncate">${escHtml(l.label)}</span>
+          </a>
+          <button onclick="deleteItem('${l.__backendId}')" class="text-slate-500 hover:text-red-400 p-1"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function renderFiles(container, files) {
+      const sorted = [...files].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      container.innerHTML = sorted.map(f => `
+        <div class="flex items-center gap-3 p-3 bg-slate-800 rounded-lg border border-slate-700">
+          <div class="w-9 h-9 rounded bg-slate-700 flex items-center justify-center shrink-0"><i data-lucide="file-text" style="width:18px;height:18px;color:#94a3b8;"></i></div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-slate-200 truncate">${escHtml(f.label)}</p>
+            <a href="${escAttr(f.url)}" target="_blank" rel="noopener noreferrer" class="text-xs text-emerald-400 hover:underline truncate block">${escHtml(f.url)}</a>
+          </div>
+          <button onclick="deleteItem('${f.__backendId}')" class="text-slate-500 hover:text-red-400 p-1"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    async function deleteItem(id) {
+      const item = allData.find(d => d.__backendId === id);
+      if (!item) return;
+      const result = await window.dataSdk.delete(item);
+      if (!result.isOk) showToast('Failed to delete');
+    }
+
+    // Forms
+    document.getElementById('chat-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (isSubmitting || allData.length >= 999) { if (allData.length >= 999) showToast('Storage limit reached (999 items)'); return; }
+      isSubmitting = true;
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = '...';
+      const result = await window.dataSdk.create({
+        type: 'chat',
+        content: document.getElementById('chat-input').value.trim(),
+        author: document.getElementById('chat-author').value.trim(),
+        url: '',
+        label: '',
+        timestamp: new Date().toISOString()
+      });
+      if (!result.isOk) showToast('Failed to send');
+      document.getElementById('chat-input').value = '';
+      btn.disabled = false; btn.textContent = 'Send';
+      isSubmitting = false;
+    });
+
+    document.getElementById('link-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (isSubmitting || allData.length >= 999) { if (allData.length >= 999) showToast('Storage limit reached'); return; }
+      isSubmitting = true;
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = '...';
+      const result = await window.dataSdk.create({
+        type: 'link',
+        content: '',
+        author: '',
+        url: document.getElementById('link-url').value.trim(),
+        label: document.getElementById('link-label').value.trim(),
+        timestamp: new Date().toISOString()
+      });
+      if (!result.isOk) showToast('Failed to add link');
+      document.getElementById('link-url').value = '';
+      document.getElementById('link-label').value = '';
+      btn.disabled = false; btn.textContent = 'Add Link';
+      isSubmitting = false;
+    });
+
+    document.getElementById('file-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (isSubmitting || allData.length >= 999) { if (allData.length >= 999) showToast('Storage limit reached'); return; }
+      isSubmitting = true;
+      const btn = e.target.querySelector('button[type="submit"]');
+      btn.disabled = true; btn.textContent = '...';
+      const result = await window.dataSdk.create({
+        type: 'file',
+        content: '',
+        author: '',
+        url: document.getElementById('file-url').value.trim(),
+        label: document.getElementById('file-label').value.trim(),
+        timestamp: new Date().toISOString()
+      });
+      if (!result.isOk) showToast('Failed to add file');
+      document.getElementById('file-url').value = '';
+      document.getElementById('file-label').value = '';
+      btn.disabled = false; btn.textContent = 'Add File';
+      isSubmitting = false;
+    });
+
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 px-4 py-2 bg-red-500 text-white text-sm rounded-lg shadow-lg z-50';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    function escHtml(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+    function escAttr(s) { return (s || '').replace(/"/g, '&quot;'); }
+
+    lucide.createIcons();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9f8eb59832ea3c7f',t:'MTc3ODMwODc5MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
